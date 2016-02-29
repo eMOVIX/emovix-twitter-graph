@@ -71,14 +71,14 @@ if __name__ == '__main__':
         # Then, for each user we are going to work out additional nodes (followers and friends) and links
         for username in usernames:
             screen_name = username[0]
-            print screen_name
+            logging.debug('Checking username ' + str(screen_name) + ' ...')
 
             try:
                 # Let's work with the followers first
                 followers_ids = []
                 for tweepy_user in tweepy.Cursor(api.followers, screen_name=screen_name).items():
                     followers_ids.append(tweepy_user.screen_name)
-                    print followers_ids
+                    #print followers_ids
                     #time.sleep(60)
 
                 for follower_id in followers_ids:
@@ -98,7 +98,7 @@ if __name__ == '__main__':
                 friends_ids = []
                 for tweepy_user in tweepy.Cursor(api.friends, screen_name=screen_name).items():
                     friends_ids.append(tweepy_user.screen_name)
-                    print friends_ids
+                    #print friends_ids
                     #time.sleep(60)
 
                 for friend_id in friends_ids:
@@ -116,14 +116,12 @@ if __name__ == '__main__':
 
 
             except tweepy.TweepError:
-                print "Oops, Tweepy error! Sleeping for 15 minutes ..."
+                logging.debug("Oops, Tweepy error! Sleeping for 15 minutes ...")
                 time.sleep(60 * 15)
                 continue
 
             except StopIteration:
                 break
-
-            break
 
         with open(NODES_FILENAME, mode='w') as nodes_json:
             json.dump(nodes, nodes_json)
